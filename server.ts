@@ -12,13 +12,13 @@ const mappings = [
         listenPort: 3389, 
         targetPort: 4848 
     },
-    { 
-        name: "Remote SSH",
-        protocols: ['tcp', "udp"], 
-        host: "127.0.0.1",
-        listenPort: 22, 
-        targetPort: 4847 
-    },
+    // { 
+    //     name: "Remote SSH",
+    //     protocols: ['tcp', "udp"], 
+    //     host: "127.0.0.1",
+    //     listenPort: 22, 
+    //     targetPort: 4847 
+    // },
 ];
 
 // Function to handle HTTP proxying with http-proxy

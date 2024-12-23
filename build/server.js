@@ -15,13 +15,6 @@ const mappings = [
         listenPort: 3389,
         targetPort: 4848
     },
-    {
-        name: "Remote SSH",
-        protocols: ['tcp', "udp"],
-        host: "127.0.0.1",
-        listenPort: 22,
-        targetPort: 4847
-    },
 ];
 function createHttpProxy(name, host, listenPort, targetPort) {
     const proxy = http_proxy_1.default.createProxyServer({});
