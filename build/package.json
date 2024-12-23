@@ -4,6 +4,7 @@
     "main": "index.js",
     "license": "MIT",
     "devDependencies": {
+        "@types/http-proxy": "^1.17.15",
         "@types/node": "^22.10.2",
         "nodemon": "^3.1.9",
         "rimraf": "^6.0.1",
@@ -16,10 +17,7 @@
         "build": "rimraf build && tsc"
     },
     "dependencies": {
-        "@types/http-proxy": "^1.17.15",
-        "dgram": "^1.0.1",
         "http": "^0.0.1-security",
-        "http-proxy": "^1.18.1",
-        "net": "^1.0.2"
+        "http-proxy": "^1.18.1"
     }
 }
