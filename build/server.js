@@ -12,7 +12,7 @@ const mappings = [
         name: "Remote Desktop",
         protocols: ['tcp', "udp"],
         host: "nonandchain.thddns.net",
-        listenPort: 3389,
+        listenPort: 3388,
         targetPort: 4848
     },
 ];
