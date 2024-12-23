@@ -1,0 +1,25 @@
+{
+    "name": "proxy_server",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^22.10.2",
+        "nodemon": "^3.1.9",
+        "rimraf": "^6.0.1",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.7.2"
+    },
+    "scripts": {
+        "dev": "nodemon ./server.ts",
+        "start": "node ./build/server.js",
+        "build": "rimraf build && tsc"
+    },
+    "dependencies": {
+        "@types/http-proxy": "^1.17.15",
+        "dgram": "^1.0.1",
+        "http": "^0.0.1-security",
+        "http-proxy": "^1.18.1",
+        "net": "^1.0.2"
+    }
+}
