@@ -49,7 +49,11 @@ function createSocketIoProxy(name: string, host: string, listenPort: number, tar
 function createHttpProxy(name: string, host: string, listenPort: number, targetPort: number): void {
     const app: Application = express();
     const server: http.Server = http.createServer(app);
-    const proxy: httpProxy = httpProxy.createProxyServer({ target: `http://${host}:${targetPort}`, ws: true });
+    const proxy: httpProxy = httpProxy.createProxyServer({ 
+        target: `http://${host}:${targetPort}`, 
+        changeOrigin: true,
+        ws: true 
+    });
 
 
     app.use((req: Request, res: Response) => {
@@ -75,6 +79,22 @@ function createHttpProxy(name: string, host: string, listenPort: number, targetP
         proxy.ws(req, socket, head, {}, (err: Error) => {
             console.error('WebSocket proxy error:', err.message);
         });
+    });
+
+    proxy.on('error', (err: Error, req: http.IncomingMessage, res: http.ServerResponse<http.IncomingMessage> | net.Socket) => {
+        console.error('Proxy error:', err);
+        if (res instanceof ServerResponse) {
+            if (!res.headersSent) {
+                res.writeHead(500, { 'Content-Type': 'text/plain' });
+            }
+            res.end('Proxy encountered an error.');
+        } 
+        else if (res instanceof net.Socket) {
+            res.end('HTTP/1.1 500 Internal Server Error\r\n\r\n');
+        } 
+        else {
+            console.error('Unknown response type encountered in proxy error handler.');
+        }
     });
 
     server.listen(listenPort, (): void => {
