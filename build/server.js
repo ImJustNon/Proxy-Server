@@ -9,11 +9,11 @@ const http_1 = __importDefault(require("http"));
 const http_proxy_1 = __importDefault(require("http-proxy"));
 const mappings = [
     {
-        name: "Remote Desktop",
-        protocols: ['tcp', "udp"],
+        name: "Immich App",
+        protocols: ["http"],
         host: "nonandchain.thddns.net",
-        listenPort: 3388,
-        targetPort: 4848
+        listenPort: 80,
+        targetPort: 4840
     },
 ];
 function createHttpProxy(name, host, listenPort, targetPort) {

@@ -5,20 +5,27 @@ import httpProxy from "http-proxy";
 
 // Define port mappings for TCP, UDP, and HTTP
 const mappings = [
-    {
-        name: "Remote Desktop",
-        protocols: ['tcp', "udp"], 
-        host: "nonandchain.thddns.net",
-        listenPort: 3388, 
-        targetPort: 4848 
-    },
+    // {
+    //     name: "Remote Desktop",
+    //     protocols: ['tcp', "udp"], 
+    //     host: "nonandchain.thddns.net",
+    //     listenPort: 3388, 
+    //     targetPort: 4848 
+    // },
     // { 
     //     name: "Remote SSH",
     //     protocols: ['tcp', "udp"], 
-    //     host: "127.0.0.1",
+    //     host: "nonandchain.thddns.net",
     //     listenPort: 22, 
     //     targetPort: 4847 
     // },
+    { 
+        name: "Immich App",
+        protocols: ["http"], 
+        host: "nonandchain.thddns.net",
+        listenPort: 80, 
+        targetPort: 4840
+    },
 ];
 
 // Function to handle HTTP proxying with http-proxy
