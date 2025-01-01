@@ -34,7 +34,8 @@ function createHttpProxy(name: string, host: string, listenPort: number, targetP
 
     const server: Server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
         proxy.web(req, res, { 
-            target: `http://${host}:${targetPort}` 
+            target: `http://${host}:${targetPort}`, 
+            ws: true,
         }, (err) => {
             console.error(`HTTP proxy error for port ${listenPort}:`, err);
             res.writeHead(500, { 'Content-Type': 'text/plain' });

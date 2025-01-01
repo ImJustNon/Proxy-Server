@@ -20,7 +20,8 @@ function createHttpProxy(name, host, listenPort, targetPort) {
     const proxy = http_proxy_1.default.createProxyServer({});
     const server = http_1.default.createServer((req, res) => {
         proxy.web(req, res, {
-            target: `http://${host}:${targetPort}`
+            target: `http://${host}:${targetPort}`,
+            ws: true,
         }, (err) => {
             console.error(`HTTP proxy error for port ${listenPort}:`, err);
             res.writeHead(500, { 'Content-Type': 'text/plain' });
