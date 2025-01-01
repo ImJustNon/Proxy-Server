@@ -7,6 +7,7 @@ const net_1 = __importDefault(require("net"));
 const dgram_1 = __importDefault(require("dgram"));
 const http_1 = __importDefault(require("http"));
 const http_proxy_1 = __importDefault(require("http-proxy"));
+const express_1 = __importDefault(require("express"));
 const mappings = [
     {
         name: "Immich App",
@@ -16,16 +17,33 @@ const mappings = [
         targetPort: 4840
     },
 ];
+function createSocketIoProxy(name, host, listenPort, targetPort) {
+    const app = (0, express_1.default)();
+    const server = http_1.default.createServer(app);
+    const proxy = http_proxy_1.default.createProxyServer({ target: `http://${host}:${targetPort}`, ws: true });
+    server.on('upgrade', (req, socket, head) => {
+        proxy.ws(req, socket, head, {}, (err) => {
+            console.error('WebSocket proxy error:', err.message);
+        });
+    });
+    server.listen(listenPort, () => {
+        console.log(`[${name}] UDP server listening on port ${listenPort}, forwarding to ${targetPort}`);
+    });
+}
 function createHttpProxy(name, host, listenPort, targetPort) {
-    const proxy = http_proxy_1.default.createProxyServer({});
-    const server = http_1.default.createServer((req, res) => {
-        proxy.web(req, res, {
-            target: `http://${host}:${targetPort}`,
-            ws: true,
-        }, (err) => {
+    const app = (0, express_1.default)();
+    const server = http_1.default.createServer(app);
+    const proxy = http_proxy_1.default.createProxyServer({ target: `http://${host}:${targetPort}`, ws: true });
+    app.use((req, res) => {
+        proxy.web(req, res, {}, (err) => {
             console.error(`HTTP proxy error for port ${listenPort}:`, err);
             res.writeHead(500, { 'Content-Type': 'text/plain' });
             res.end('Internal Server Error');
+        });
+    });
+    server.on('upgrade', (req, socket, head) => {
+        proxy.ws(req, socket, head, {}, (err) => {
+            console.error('WebSocket proxy error:', err.message);
         });
     });
     server.listen(listenPort, () => {

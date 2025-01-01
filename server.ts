@@ -2,6 +2,9 @@ import net from "net";
 import dgram from "dgram";
 import http, { IncomingMessage, RequestListener, Server, ServerResponse } from "http";
 import httpProxy from "http-proxy";
+import socketIo from "socket.io";
+import express, { Application, Request, Response } from "express";
+import internal from "stream";
 
 // Define port mappings for TCP, UDP, and HTTP
 const mappings = [
@@ -28,18 +31,49 @@ const mappings = [
     },
 ];
 
+function createSocketIoProxy(name: string, host: string, listenPort: number, targetPort: number){
+    const app = express();
+    const server = http.createServer(app);
+    const proxy = httpProxy.createProxyServer({ target: `http://${host}:${targetPort}`, ws: true });
+    server.on('upgrade', (req: IncomingMessage, socket: internal.Duplex, head: Buffer<ArrayBufferLike>) => {
+        proxy.ws(req, socket, head, {}, (err: Error) => {
+            console.error('WebSocket proxy error:', err.message);
+        });
+    });
+    server.listen(listenPort, () => {
+        console.log(`[${name}] UDP server listening on port ${listenPort}, forwarding to ${targetPort}`);
+    });
+}
+
 // Function to handle HTTP proxying with http-proxy
 function createHttpProxy(name: string, host: string, listenPort: number, targetPort: number): void {
-    const proxy: httpProxy = httpProxy.createProxyServer({});
+    const app: Application = express();
+    const server: http.Server = http.createServer(app);
+    const proxy: httpProxy = httpProxy.createProxyServer({ target: `http://${host}:${targetPort}`, ws: true });
 
-    const server: Server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
-        proxy.web(req, res, { 
-            target: `http://${host}:${targetPort}`, 
-            ws: true,
-        }, (err) => {
+
+    app.use((req: Request, res: Response) => {
+        proxy.web(req, res, {}, (err: Error) => {
             console.error(`HTTP proxy error for port ${listenPort}:`, err);
             res.writeHead(500, { 'Content-Type': 'text/plain' });
             res.end('Internal Server Error');
+        });
+    });
+
+    // const server: Server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
+    //     proxy.web(req, res, { 
+    //         target: `http://${host}:${targetPort}`, 
+    //         ws: true,
+    //     }, (err) => {
+    //         console.error(`HTTP proxy error for port ${listenPort}:`, err);
+    //         res.writeHead(500, { 'Content-Type': 'text/plain' });
+    //         res.end('Internal Server Error');
+    //     });
+    // });
+
+    server.on('upgrade', (req: IncomingMessage, socket: internal.Duplex, head: Buffer<ArrayBufferLike>) => {
+        proxy.ws(req, socket, head, {}, (err: Error) => {
+            console.error('WebSocket proxy error:', err.message);
         });
     });
 
@@ -89,6 +123,8 @@ function createUdpProxy(name: string, host: string, listenPort: number, targetPo
         console.log(`[${name}] UDP server listening on port ${listenPort}, forwarding to ${targetPort}`);
     });
 }
+
+
 
 // Start servers for each protocol based on mappings
 mappings.forEach(({ name, protocols, host, listenPort, targetPort }: { name: string; protocols: string[]; host: string; listenPort: number, targetPort: number }): void => {
