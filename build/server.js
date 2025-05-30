@@ -43,12 +43,12 @@ const http_proxy_1 = __importDefault(require("http-proxy"));
 const express_1 = __importDefault(require("express"));
 const mappings = [
     {
-        name: "Immich App",
+        name: "Discord_Bot_API",
         protocols: ["http"],
         host: "nonandchain.thddns.net",
         listenPort: 80,
-        targetPort: 4840
-    },
+        targetPort: 4849
+    }
 ];
 function createSocketIoProxy(name, host, listenPort, targetPort) {
     const app = (0, express_1.default)();

@@ -22,13 +22,20 @@ const mappings = [
     //     listenPort: 22, 
     //     targetPort: 4847 
     // },
-    { 
-        name: "Immich App",
+    // { 
+    //     name: "Immich App",
+    //     protocols: ["http"], 
+    //     host: "nonandchain.thddns.net",
+    //     listenPort: 80, 
+    //     targetPort: 4840
+    // },
+    {
+        name: "Discord_Bot_API",
         protocols: ["http"], 
         host: "nonandchain.thddns.net",
         listenPort: 80, 
-        targetPort: 4840
-    },
+        targetPort: 4849
+    }
 ];
 
 function createSocketIoProxy(name: string, host: string, listenPort: number, targetPort: number){
