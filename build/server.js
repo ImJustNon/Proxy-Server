@@ -48,6 +48,13 @@ const mappings = [
         host: "nonandchain.thddns.net",
         listenPort: 80,
         targetPort: 4849
+    },
+    {
+        name: "Remote_Desktop",
+        protocols: ["tcp", "udp"],
+        host: "nonandchain.thddns.net",
+        listenPort: 3389,
+        targetPort: 4848
     }
 ];
 function createSocketIoProxy(name, host, listenPort, targetPort) {
